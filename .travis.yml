@@ -1,0 +1,34 @@
+dist: trusty
+
+language: go
+
+go:
+  - 1.13.1
+
+env:
+  global:
+    - TIO_VERSION=v0.1.0
+    - TIO_DEPLOY_AGENT=tioserverless/deploy-agent
+
+addons:
+  sonarcloud:
+    organization: "tio-serverless"
+    token:
+      secure: "Qc9MbETM2k/lBW3mzJn0Dj+O/HibKoKOHddQpHSYioFzbbDOiImRNPvAuBkbwyQwUcRf03fJXbtHMYsU9tldi+Am9396EiO/70zxjGi4yhwuPAMIS1fWgUaqbWRrsa3PsGnZr5RsQFGLTDLRyR7nN7j2pvX35z79PrO42ppI1tAtEowmc3l6WevKJcQaQ7KZ5FQqq94EEgjUrJq3OWEwX4UkpOWk8GFCYkGtjubsOZqluzNc157HL0DHr01INI/Rx3z7z+OzkM+HGy5KpU9Lr/xh17JDaZ184ruUg4ADcGKK4ioz/cBRxnJ7S6WEkNRx2VvUQAmx67AHGabhGPFG7zunpFkqkJoIth8Yd5z6kdB+znNb8rEWs2AIZDuxsfbtYzHBBJM/Xne+d2rZXBoCzRO/nqDj6wWljiXPTSVusmK1lhFCFq3LTsOhLywQc3BpXa4ENxOXTI4BUHjVERrP4Ndnlz4C3KXgn7Pt1sh/w2aZuhXufYCGcHbgIX9wCSuQAI6Fea64wGxzZ5xWubrz2D7AC0Cf2z1gFf0gdoT+OhNz0acIfgZfG6xKqicS7SHAvMebsQWjkIvQKe77C09b1hr3ZRc1SscbAqtMBIRorCA7t+NrbTd6CtMFzqC3EV7JIBiuLvc3K+A00QiEOyAVmttKtYnMmE0KOXjPZms5R3s="
+
+script:
+  - sonar-scanner
+
+services:
+  - docker
+
+before_install:
+  - echo "$DOCKER_PASSWD" | docker login -u "$DOCKER_USER" --password-stdin
+  - go get github.com/golang/mock/gomock
+  - go get github.com/golang/mock/mockgen
+
+install:
+  - go test ./...
+  - go build -mod=vendor -ldflags "-X main._VERSION_=$TIO_VERSION -X main._BRANCH_=$TRAVIS_BRANCH" -o bin/tio-deploy *.go
+  - docker build -t ${TIO_DEPLOY_AGENT}:${TIO_VERSION}-${TRAVIS_BRANCH} -f Dockerfile .
+  - docker push ${TIO_DEPLOY_AGENT}:${TIO_VERSION}-${TRAVIS_BRANCH}
