@@ -264,9 +264,10 @@ func (k *SimpleK8s) GetPodInfo(name string) (apiv1.Pod, error) {
 	}
 
 	for _, pod := range p.Items {
-		logrus.Debugf("%s Pod Name: %s", name, pod.Name)
-		if strings.HasSuffix(pod.Name, "-sidecar") {
-			return pod, nil
+		for _, c := range pod.Status.ContainerStatuses {
+			if strings.HasSuffix(c.Name, "-sidecar") {
+				return pod, nil
+			}
 		}
 	}
 
