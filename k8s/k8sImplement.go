@@ -252,7 +252,7 @@ func (k *SimpleK8s) GetPodInfo(name string) (apiv1.Pod, error) {
 	logrus.Debugf("Query %s Pod Info", name)
 	p, err := k.client.CoreV1().Pods(k.B.K.Namespace).List(metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("tio-app=%s", name),
-		Limit:         1,
+		Limit:         10,
 	})
 	if err != nil {
 		return apiv1.Pod{}, err
