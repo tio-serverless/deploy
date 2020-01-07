@@ -2,7 +2,7 @@ package main
 
 import (
 	"testing"
-
+	"tiodeploy/k8s"
 )
 
 func Test_grcpSrv_compute(t *testing.T) {

@@ -11,6 +11,7 @@ require (
 	github.com/imdario/mergo v0.3.8 // indirect
 	github.com/json-iterator/go v1.1.9 // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/openzipkin/zipkin-go v0.2.2
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/pflag v1.0.5 // indirect

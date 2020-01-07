@@ -13,7 +13,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	tio_control_v1 "github.com/tio-serverless/grpc"
-	"github.com/tio-serverless/model/database/model"
+	tiomodel "github.com/tio-serverless/model/database/model"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -30,10 +30,10 @@ func main() {
 
 	go enableInject()
 
-	startRpc()
+	startRPC()
 }
 
-func startRpc() {
+func startRPC() {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", b.Port))
 	if err != nil {
 		logrus.Fatalf("failed to listen: %v", err)

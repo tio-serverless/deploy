@@ -2,13 +2,12 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"time"
 
-	"google.golang.org/grpc"
 	tio_build_v1 "github.com/tio-serverless/grpc"
+	"google.golang.org/grpc"
 )
 
 func sendInjectMsg(endpoint, name, injectTYpe string) error {
@@ -34,7 +33,7 @@ func sendInjectMsg(endpoint, name, injectTYpe string) error {
 	}
 
 	if reply.Code != 0 {
-		return errors.New(fmt.Sprintf("Deploy Agent Return Error. [%s]", reply.Msg))
+		return fmt.Errorf(fmt.Sprintf("Deploy Agent Return Error. [%s]", reply.Msg))
 	}
 
 	return nil
