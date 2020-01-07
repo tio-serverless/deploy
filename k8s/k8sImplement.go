@@ -249,6 +249,7 @@ func (k *SimpleK8s) GetDeploymentInfo(name string) (v1.Deployment, error) {
 // GetPodInfo 获取Pod信息
 func (k *SimpleK8s) GetPodInfo(name string) (apiv1.Pod, error) {
 
+	logrus.Debugf("Query %s Pod Info", name)
 	p, err := k.client.CoreV1().Pods(k.B.K.Namespace).List(metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("tio-app=%s", name),
 		Limit:         1,
@@ -257,16 +258,18 @@ func (k *SimpleK8s) GetPodInfo(name string) (apiv1.Pod, error) {
 		return apiv1.Pod{}, err
 	}
 
+	logrus.Debugf("%s Find %d Pod", name, len(p.Items))
 	if len(p.Items) == 0 {
 		return apiv1.Pod{}, errors.New("There are not running pod")
 	}
 
 	for _, pod := range p.Items {
+		logrus.Debugf("%s Pod Name: %s", name, pod.Name)
 		if strings.HasSuffix(pod.Name, "-sidecar") {
 			return pod, nil
 		}
-
 	}
+
 	return apiv1.Pod{}, fmt.Errorf("There are not available pod in %s", name)
 }
 
